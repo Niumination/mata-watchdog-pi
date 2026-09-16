@@ -1,9 +1,85 @@
-// MATA Watchdog App Logic
-document.addEventListener('DOMContentLoaded', () => {
-  loadDashboard();
-  loadPackages();
-  loadDossier();
-  loadStats();
+// MATA Watchdog App Logic — with Pi Authentication (App Studio Required)
+
+// STEP 1: Pi Authentication (REQUIRED by App Studio)
+async function initPiAuth() {
+  try {
+    // Await Pi.init before any SDK calls
+    await Pi.init({ version: "2.0" });
+    
+    // Authenticate user (no sandbox flag — auto-detected now)
+    const auth = await window.Pi.authenticate(
+      ["username", "payments"],
+      onIncompletePaymentFound
+    );
+    
+    if (!auth || !auth.accessToken) {
+      throw new Error("Authentication failed - no access token");
+    }
+    
+    // STEP 2: Exchange accessToken with App Studio (REQUIRED)
+    const APP_STUDIO_AUTH_URL = "https://backend.appstudio-u7cm9zhmha0ruwv8.piappengine.com/pi/auth/v1/login";
+    
+    const res = await fetch(APP_STUDIO_AUTH_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ accessToken: auth.accessToken })
+    });
+    
+    if (!res.ok) {
+      throw new Error(`App Studio auth failed: ${res.status}`);
+    }
+    
+    const session = await res.json();
+    
+    if (!session.sessionToken || !session.user) {
+      throw new Error("Invalid session response from App Studio");
+    }
+    
+    // Store session token in memory (NEVER store uid/username from Pi.authenticate)
+    window.__piSession = session;
+    
+    // Display user info from App Studio (trusted source)
+    const userInfo = document.getElementById('userInfo');
+    if (userInfo) {
+      userInfo.textContent = `👤 ${session.user.username} • Verified`;
+    }
+    
+    return session;
+    
+  } catch (err) {
+    console.error("Pi Auth error:", err);
+    document.getElementById('main').innerHTML = `
+      <div style="padding:20px;text-align:center;">
+        <h3>⚠️ Authentication Required</h3>
+        <p style="color:#666;">Please sign in with Pi Network to access MATA Watchdog.</p>
+        <p style="font-size:11px;color:#999;margin-top:12px;">${err.message}</p>
+      </div>
+    `;
+    throw err;
+  }
+}
+
+function onIncompletePaymentFound(payment) {
+  console.log("Incomplete payment found:", payment);
+  // App Studio handles incomplete payments automatically
+  // Do NOT complete them yourself
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    // REQUIRED: Authenticate BEFORE loading any app content
+    await initPiAuth();
+    
+    // Only after successful auth, load app data
+    loadDashboard();
+    loadPackages();
+    loadDossier();
+    loadStats();
+    
+  } catch (err) {
+    // Auth failed — app remains on auth error screen
+    console.error("App initialization failed:", err);
+  }
 });
 
 // Navigation
