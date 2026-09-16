@@ -1,0 +1,64 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f6fa; color: #1e3a5f; }
+.app { max-width: 480px; margin: 0 auto; min-height: 100vh; background: #fff; position: relative; padding-bottom: 70px; }
+
+header { background: linear-gradient(135deg, #1e3a5f 0%, #2a4a7f 100%); color: #fff; padding: 20px; text-align: center; }
+header .logo { width: 60px; height: 60px; border-radius: 12px; margin-bottom: 8px; }
+header h1 { font-size: 22px; font-weight: 700; }
+header p { font-size: 12px; opacity: 0.85; margin-top: 4px; }
+
+nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: #fff; border-top: 1px solid #e0e0e0; display: flex; z-index: 100; }
+.nav-btn { flex: 1; padding: 10px 4px; background: none; border: none; cursor: pointer; text-align: center; font-size: 10px; color: #666; }
+.nav-btn .icon { display: block; font-size: 20px; margin-bottom: 2px; }
+.nav-btn.active { color: #d4af37; font-weight: 600; }
+
+main { padding: 16px; }
+.page { display: none; }
+.page.active { display: block; }
+h2 { font-size: 18px; margin-bottom: 12px; color: #1e3a5f; }
+
+.metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+.metric-card { background: #1e3a5f; color: #fff; padding: 14px 8px; border-radius: 10px; text-align: center; }
+.metric-card .number { display: block; font-size: 22px; font-weight: 700; }
+.metric-card .label { font-size: 10px; opacity: 0.85; }
+
+.total-card { background: linear-gradient(135deg, #d4af37 0%, #e6c04a 100%); color: #1e3a5f; padding: 16px; border-radius: 10px; text-align: center; margin-bottom: 16px; }
+.total-label { display: block; font-size: 11px; }
+.total-value { display: block; font-size: 20px; font-weight: 700; margin-top: 4px; }
+
+h3 { font-size: 14px; margin-bottom: 8px; }
+.indications { list-style: none; }
+.indications li { background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 6px; border-left: 3px solid #d4af37; cursor: pointer; }
+.indications li:hover { background: #eef1f5; }
+.indications .code { font-weight: 700; font-size: 12px; color: #1e3a5f; }
+.indications .desc { font-size: 11px; color: #555; margin-top: 2px; }
+.risk-badge { font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
+.risk-TINGGI { background: #ffebee; color: #c62828; }
+.risk-SEDANG { background: #fff8e1; color: #f57f17; }
+.risk-RENDAH { background: #e8f5e9; color: #2e7d32; }
+
+.search { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; margin-bottom: 10px; }
+.filters { display: flex; gap: 8px; margin-bottom: 10px; }
+.filters select { flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 12px; }
+
+.table-wrapper { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 11px; }
+th { background: #1e3a5f; color: #fff; padding: 8px 6px; text-align: left; font-weight: 600; }
+td { padding: 8px 6px; border-bottom: 1px solid #eee; }
+tr:hover td { background: #f8f9fa; }
+
+.dossier-list { list-style: none; }
+.dossier-list li { background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 8px; cursor: pointer; }
+.dossier-list li:hover { background: #eef1f5; }
+
+.chart-container { background: #f8f9fa; padding: 14px; border-radius: 10px; margin-bottom: 12px; }
+.chart-container h4 { font-size: 12px; margin-bottom: 10px; color: #555; }
+.bar-chart { display: flex; align-items: flex-end; gap: 4px; height: 100px; }
+.bar { flex: 1; background: #1e3a5f; border-radius: 3px 3px 0 0; min-height: 4px; }
+.bar-chart.horizontal { flex-direction: column; height: auto; }
+.bar-chart.horizontal .bar-row { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.bar-chart.horizontal .bar-label { width: 80px; font-size: 9px; text-align: right; }
+.bar-chart.horizontal .bar { height: 14px; }
+.pie-chart { display: flex; gap: 12px; flex-wrap: wrap; }
+.pie-item { display: flex; align-items: center; gap: 4px; font-size: 10px; }
+.pie-color { width: 12px; height: 12px; border-radius: 50%; }

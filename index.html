@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MATA Watchdog — Transparansi Pengadaan</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app">
+  <header>
+    <img src="assets/mata-watchdog-logo.png" alt="MATA" class="logo" width="40" height="40" onerror="this.style.display='none'">
+    <h1>MATA Watchdog</h1>
+    <p>Transparansi Pengadaan Publik — Kab. Aceh Tengah</p>
+  </header>
+
+  <nav>
+    <button class="nav-btn active" data-page="dashboard">
+      <span class="icon">🏠</span><span class="label">Beranda</span>
+    </button>
+    <button class="nav-btn" data-page="packages">
+      <span class="icon">📋</span><span class="label">Paket</span>
+    </button>
+    <button class="nav-btn" data-page="dossier">
+      <span class="icon">🔍</span><span class="label">Dossier</span>
+    </button>
+    <button class="nav-btn" data-page="stats">
+      <span class="icon">📊</span><span class="label">Statistik</span>
+    </button>
+  </nav>
+
+  <main id="main">
+    <section id="dashboard" class="page active">
+      <h2>Ringkasan</h2>
+      <div class="metrics">
+        <div class="metric-card"><span class="number">657</span><span class="label">Total Paket</span></div>
+        <div class="metric-card"><span class="number">5</span><span class="label">Indikasi</span></div>
+        <div class="metric-card"><span class="number">2</span><span class="label">Tinggi</span></div>
+      </div>
+      <div class="total-card">
+        <span class="total-label">Total Nilai Pengadaan</span>
+        <span class="total-value">Rp 133.601.537.390</span>
+      </div>
+      <h3>Indikasi Terkini</h3>
+      <ul class="indications" id="topIndications"></ul>
+    </section>
+
+    <section id="packages" class="page">
+      <h2>Daftar Paket</h2>
+      <input type="text" id="searchInput" placeholder="Cari nama paket atau OPD..." class="search">
+      <div class="filters">
+        <select id="filterOpd"><option value="">Semua OPD</option></select>
+        <select id="filterStatus"><option value="">Semua Status</option></select>
+      </div>
+      <div class="table-wrapper">
+        <table id="packagesTable">
+          <thead><tr><th>No</th><th>Nama Paket</th><th>OPD</th><th>Nilai</th><th>Status</th></tr></thead>
+          <tbody id="packagesBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="dossier" class="page">
+      <h2>Dossier Pengadaan</h2>
+      <div id="dossierList" class="dossier-list"></div>
+      <div id="dossierDetail" class="dossier-detail" style="display:none"></div>
+    </section>
+
+    <section id="stats" class="page">
+      <h2>Statistik</h2>
+      <div class="chart-container">
+        <h4>Tren Bulanan (Paket)</h4>
+        <div id="trendChart" class="bar-chart"></div>
+      </div>
+      <div class="chart-container">
+        <h4>Per OPD</h4>
+        <div id="opdChart" class="bar-chart horizontal"></div>
+      </div>
+      <div class="chart-container">
+        <h4>Sumber Dana</h4>
+        <div id="sourceChart" class="pie-chart"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
