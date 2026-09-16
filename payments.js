@@ -1,3 +1,6 @@
+// MATA Watchdog — Pi Payments Integration
+// Reference: https://pi-apps.github.io/pi-sdk-docs/quick-start/genai/Payments
+
 // Payment Products Configuration
 const PAYMENT_PRODUCTS = {
   dossier_pdf: {
@@ -23,11 +26,30 @@ const PAYMENT_PRODUCTS = {
   }
 };
 
-// Pi Payments Integration (per official Pi App Studio docs)
+// Backend URL
+const BACKEND_URL = 'http://localhost:3001';
 
-// Track payment completion to deliver product after verification
+// Payment state
 let paymentCompleted = false;
 let currentProductId = null;
+
+// Incomplete payment handler (REQUIRED by App Studio)
+function onIncompletePaymentFound(payment) {
+  console.log("Incomplete payment found:", payment);
+  
+  if (payment.metadata && payment.metadata.productId) {
+    const productId = payment.metadata.productId;
+    
+    if (payment.status === "approved" && payment.transaction) {
+      handlePaymentCompletion(
+        payment.identifier,
+        payment.transaction.txid,
+        productId,
+        payment.metadata.dossierId
+      );
+    }
+  }
+}
 
 // STEP 1: Purchase product (User-to-App payment)
 async function purchaseProduct(productId, dossierId) {
@@ -50,7 +72,7 @@ async function purchaseProduct(productId, dossierId) {
     await Pi.init({ version: "2.0" });
   } catch (err) {
     console.error("Pi.init failed:", err);
-    alert("Gagal menginisialisasi Pi SDK.");
+    alert("Gagal menginisialiasi Pi SDK.");
     return;
   }
 
@@ -104,38 +126,34 @@ async function purchaseProduct(productId, dossierId) {
 // STEP 2: Server Approval — notify backend to approve payment
 async function handlePaymentApproval(paymentId, productId) {
   try {
-    // Call App Studio backend to approve payment
-    // For static frontend: notify user that payment is being processed
-    console.log(`Payment ${paymentId} ready for approval`);
-    
-    // In production: send to your backend
-    // await fetch('/api/payments/approve', { ... })
-    
-    // For MVP (static frontend): show pending notification
-    alert(`Pembayaran sedang diproses. Tunggu konfirmasi...`);
+    const res = await fetch(`${BACKEND_URL}/api/payments/approve`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ paymentId })
+    });
+    if (!res.ok) throw new Error(`Approval failed: ${res.status}`);
+    alert('Pembayaran sedang diproses...');
   } catch (err) {
-    console.error("Approval failed:", err);
+    console.error('Approval failed:', err);
+    alert('Gagal memproses pembayaran.');
   }
 }
 
 // STEP 3: Server Completion — notify backend to complete payment & deliver product
 async function handlePaymentCompletion(paymentId, txid, productId, dossierId) {
   try {
-    console.log(`Payment ${paymentId} completed. TXID: ${txid}`);
-    
-    // In production: verify with backend
-    // await fetch('/api/payments/complete', { ... })
-    
-    // For MVP: mark as completed and deliver product
+    const res = await fetch(`${BACKEND_URL}/api/payments/complete`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ paymentId, txid })
+    });
+    if (!res.ok) throw new Error(`Completion failed: ${res.status}`);
     paymentCompleted = true;
-    
-    // Deliver product based on type
     deliverProduct(productId, dossierId);
-    
-    alert("Pembayaran berhasil! Mengunduh file...");
+    alert('Pembayaran berhasil! Mengunduh file...');
   } catch (err) {
-    console.error("Completion failed:", err);
-    alert("Pembayaran gagal dikonfirmasi.");
+    console.error('Completion failed:', err);
+    alert('Pembayaran gagal dikonfirmasi.');
   }
 }
 
@@ -143,11 +161,7 @@ async function handlePaymentCompletion(paymentId, txid, productId, dossierId) {
 function deliverProduct(productId, dossierId) {
   switch (productId) {
     case "dossier_pdf":
-      if (dossierId) {
-        showPdfDownload(dossierId);
-      } else {
-        showPdfDownload("demo");
-      }
+      showPdfDownload(dossierId || "demo");
       break;
     case "csv_export":
       downloadCsv();
@@ -168,34 +182,15 @@ function resetPaymentState() {
   }, 1000);
 }
 
-// Incomplete payment handler (REQUIRED by App Studio)
-function onIncompletePaymentFound(payment) {
-  console.log("Incomplete payment found:", payment);
-  
-  // Check if this payment belongs to our app
-  if (payment.metadata && payment.metadata.productId) {
-    const productId = payment.metadata.productId;
-    
-    // Resume the payment completion flow
-    if (payment.status === "approved") {
-      // Payment was approved but not completed — complete it
-      handlePaymentCompletion(payment.identifier, payment.transaction ? payment.transaction.txid : null, productId, payment.metadata.dossierId);
-    }
-  }
-}
-
-// Demo product delivery functions (replace with real backend integration)
+// Demo product delivery (replace with real backend integration)
 function showPdfDownload(dossierId) {
-  // In production: generate real PDF with backend
-  alert(`📄 Demo: Mengunduh PDF Dossier ${dossierId}...\nFitur lengkap akan tersedia setelah backend Pi Payments terhubung.`);
+  alert(`📄 Demo: Mengunduh PDF Dossier ${dossierId}...\nFitur lengkap akan tersedia setelah backend MATA VPS terhubung.`);
 }
 
 function downloadCsv() {
-  // In production: generate real CSV from MATA backend
-  alert(`📊 Demo: Mengunduh CSV...\nFitur lengkap akan tersedia setelah backend Pi Payments terhubung.`);
+  alert(`📊 Demo: Mengunduh CSV...\nFitur lengkap akan tersedia setelah backend MATA VPS terhubung.`);
 }
 
 function downloadFullReport() {
-  // In production: generate comprehensive report
-  alert(`📋 Demo: Mengunduh Laporan Lengkap...\nFitur lengkap akan tersedia setelah backend Pi Payments terhubung.`);
+  alert(`📋 Demo: Mengunduh Laporan Lengkap...\nFitur lengkap akan tersedia setelah backend MATA VPS terhubung.`);
 }
