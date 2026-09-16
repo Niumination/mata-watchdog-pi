@@ -180,7 +180,8 @@ function showDossierDetail(id) {
       <p style="font-size:11px;color:#666;">📄 <em>Pratinjau PDF tersedia. Fitur lengkap akan tersedia setelah app di-deploy dengan backend MATA.</em></p>
     </div>
     <button onclick="downloadPDF('${item.id}')" style="background:#1e3a5f;color:#fff;padding:10px 20px;border:none;border-radius:8px;margin-top:12px;cursor:pointer;font-size:12px;">📥 Unduh PDF (Demo)</button>
-    <button onclick="document.getElementById('dossierList').style.display='block';this.parentElement.style.display='none'" style="background:#666;color:#fff;padding:10px 20px;border:none;border-radius:8px;margin-top:12px;margin-left:8px;cursor:pointer;font-size:12px;">← Kembali</button>
+    <button onclick="purchaseProduct('dossier_pdf', '${item.id}')" style="background:#d4af37;color:#1e3a5f;padding:10px 20px;border:none;border-radius:8px;margin-top:12px;margin-left:8px;cursor:pointer;font-size:12px;font-weight:600;">💎 Unduh PDF Lengkap (2 Pi)</button>
+    <button onclick="purchaseProduct('csv_export')" style="background:#fff;color:#1e3a5f;padding:10px 20px;border:2px solid #1e3a5f;border-radius:8px;margin-top:12px;margin-left:8px;cursor:pointer;font-size:12px;">📊 Export CSV (5 Pi)</button>
   `;
 }
 
